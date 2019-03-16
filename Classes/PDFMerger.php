@@ -32,10 +32,10 @@ class PDFMerger
      */
     public function __construct()
     {
-        if(!class_exists("FPDF")) {
+        if (!class_exists("FPDF")) {
             require_once('fpdf/fpdf.php');
         }
-        if(!class_exists("FPDI")) {
+        if (!class_exists("FPDI")) {
             require_once('fpdi/fpdi.php');
         }
     }
@@ -49,6 +49,7 @@ class PDFMerger
      */
     public function addPDF($filepath, $pages = 'all')
     {
+
         if (file_exists($filepath)) {
             if (strtolower($pages) != 'all') {
                 $pages = $this->_rewritepages($pages);
@@ -81,15 +82,14 @@ class PDFMerger
             $filepages = $file[1];
 
             $count = $fpdi->setSourceFile($filename);
-
+            $offset = 20;
             //add the pages
             if ($filepages == 'all') {
                 for ($i = 1; $i <= $count; $i++) {
                     $template = $fpdi->importPage($i);
                     $size = $fpdi->getTemplateSize($template);
                     $orientation = ($size['h'] > $size['w']) ? 'P' : 'L';
-
-                    $fpdi->AddPage($orientation, array($size['w'], $size['h']));
+                    $fpdi->AddPage($orientation, array($size['w'] - $offset, $size['h'] - $offset));
                     $fpdi->useTemplate($template);
                 }
             } else {
@@ -98,7 +98,7 @@ class PDFMerger
                     $size = $fpdi->getTemplateSize($template);
                     $orientation = ($size['h'] > $size['w']) ? 'P' : 'L';
 
-                    $fpdi->AddPage($orientation, array($size['w'], $size['h']));
+                    $fpdi->AddPage($orientation, array($size['w'] - $offset, $size['h'] - $offset));
                     $fpdi->useTemplate($template);
                 }
             }
